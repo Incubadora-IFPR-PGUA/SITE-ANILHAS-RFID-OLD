@@ -1,0 +1,9 @@
+.center-content {
+    position: absolute;
+    top: 180px;
+    width: 100%;
+}
+body {
+    background-image: url("/assets/img/chicken.jpeg");
+    background-size: cover;
+}
