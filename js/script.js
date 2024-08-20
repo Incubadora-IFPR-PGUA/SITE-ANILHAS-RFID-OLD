@@ -39,8 +39,8 @@ setInterval(function () {
                         <td class='text-center'><b>${codigo}</b></td>
                         <td class='d-none d-md-table-cell text-center'><b>${formattedDate}</b></td>
                         <td class='text-center'>
-                            <button class='btn btn-primary btn-sm' onclick='editItem(${dev.id})'>Editar</button>
-                            <button class='btn btn-danger btn-sm' onclick='deleteItem(${dev.id})'>Excluir</button>
+                            <button class='btn btn-primary btn-sm' onclick='acceptAnilha(${dev.id})'>Editar</button>
+                            <button class='btn btn-danger btn-sm' onclick='deleteAnilha(${dev.id})'>Excluir</button>
                         </td>
                     </tr>`
                 );
@@ -62,5 +62,25 @@ function acceptAnilha(id) {
 }
 
 function deleteAnilha(id) {
-    
+    if (confirm("Você tem certeza que deseja excluir esta anilha?")) {
+        fetch(`https://85.31.63.241:3001/excluirAnilha/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+                document.getElementById(`row-${id}`).remove();
+            } else {
+                alert("Erro ao excluir anilha");
+            }
+        })
+        .catch(error => {
+            console.error("Erro ao excluir anilha:", error);
+            alert("Erro ao excluir anilha");
+        });
+    }
 }
