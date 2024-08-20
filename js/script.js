@@ -21,8 +21,11 @@ setInterval(function () {
 
         obj.forEach(function(dev) {
             let person = dev.anilha;
+            let codigo = dev.codigo;
+            
             if (dev.nome != null) {
                 person = dev.nome;
+                codigo = dev.codigo;
             }
             
             let actionButtons = ''; 
@@ -30,20 +33,26 @@ setInterval(function () {
             const currentPath = window.location.pathname;
 
             if (currentPath === '/tabelaAnilhas.html') {
-                actionButtons = `
-                    <td class='text-center'>
-                        <button class='btn btn-primary btn-sm' onclick='editItem(${dev.id})'>Editar</button>
-                        <button class='btn btn-danger btn-sm' onclick='deleteItem(${dev.id})'>Excluir</button>
-                    </td>`;
+                $('#table > tbody').append(
+                    `<tr>
+                        <td class='text-center'><b>${person}</b></td>
+                        <td class='text-center'><b>${codigo}</b></td>
+                        <td class='d-none d-md-table-cell text-center'><b>${formattedDate}</b></td>
+                        <td class='text-center'>
+                            <button class='btn btn-primary btn-sm' onclick='editItem(${dev.id})'>Editar</button>
+                            <button class='btn btn-danger btn-sm' onclick='deleteItem(${dev.id})'>Excluir</button>
+                        </td>
+                    </tr>`
+                );
+            } else {
+                $('#table > tbody').append(
+                    `<tr>
+                        <td class='text-center'><b>${person}</b></td>
+                        <td class='text-center'><b>${codigo}</b></td>
+                        <td class='d-none d-md-table-cell text-center'><b>${formattedDate}</b></td>
+                    </tr>`
+                );
             }
-
-            $('#table > tbody').append(
-                `<tr>
-                    <td class='text-center'><b>${person}</b></td>
-                    <td class='d-none d-md-table-cell text-center'><b>${formattedDate}</b></td>
-                    ${actionButtons ? actionButtons : "<td></td>"}  <!-- Ensure a td element is always present -->
-                </tr>`
-            );
         });
     });
 }, 2000);
