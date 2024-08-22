@@ -13,74 +13,85 @@ function formatDateTime(dateTime) {
 }
 
 setInterval(function () {
-    $.get("https://85.31.63.241:3001/anilhas", function(data) {
-        let obj = data;
-        
-        $('#table > tbody').empty();
-        $('#table > caption').text(obj.length + " AVE(S) NO NINHO");
-
-        obj.forEach(function(dev) {
-            let person = dev.anilha;
-            let codigo = dev.codigo;
-            
-            if (dev.nome != null) {
-                person = dev.nome;
-                codigo = dev.codigo;
-            }
-            
-            let actionButtons = ''; 
-            const formattedDate = formatDateTime(dev.entrada);
-            const currentPath = window.location.pathname;
-
-            if (currentPath === '/tabelaAnilhas.html') {
-                $('#table > tbody').append(
-                    `<tr>
-                        <td class='text-center'><b>${person}</b></td>
-                        <td class='text-center'><b>${codigo}</b></td>
-                        <td class='d-none d-md-table-cell text-center'><b>${formattedDate}</b></td>
-                        <td class='text-center'>
-                            <button class='btn btn-primary btn-sm' onclick='acceptAnilha(${dev.id})'>Editar</button>
-                            <button class='btn btn-danger btn-sm' onclick='deleteAnilha(${dev.id})'>Excluir</button>
-                        </td>
-                    </tr>`
-                );
-            } else {
-                $('#table > tbody').append(
-                    `<tr>
-                        <td class='text-center'><b>${person}</b></td>
-                        <td class='text-center'><b>${codigo}</b></td>
-                        <td class='d-none d-md-table-cell text-center'><b>${formattedDate}</b></td>
-                    </tr>`
-                );
-            }
-        });
-    });
+    listTagBirds();
 }, 2000);
 
-function acceptAnilha(id) {
-    
+async function listTagBirds() {
+    try {
+        const response = await axios.get('https://85.31.63.241:3001/listarAnilha');
+        const anilhas = response.data;
+        populateTable(anilhas);
+    } catch (error) {
+        console.error('Erro ao listar as anilhas:', error);
+    }
+}
+
+function populateTable(anilhas) {
+    const tableBody = document.querySelector('#table tbody');
+    tableBody.innerHTML = '';
+
+    anilhas.forEach(anilha => {
+        const row = document.createElement('tr');
+
+        const cellName = document.createElement('td');
+        cellName.textContent = anilha.nome;
+        cellName.className = 'text-center';
+        row.appendChild(cellName);
+
+        const cellAnilha = document.createElement('td');
+        cellAnilha.textContent = anilha.codigo;
+        cellAnilha.className = 'text-center d-none d-md-table-cell';
+        row.appendChild(cellAnilha);
+
+        const cellDataCriacao = document.createElement('td');
+        cellDataCriacao.textContent = formatDateTime(anilha.entrada); 
+        cellDataCriacao.className = 'text-center d-none d-md-table-cell';
+        row.appendChild(cellDataCriacao);
+
+        const cellAcoes = document.createElement('td');
+        cellAcoes.className = 'text-center d-none d-md-table-cell';
+
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Editar';
+        editButton.className = 'btn btn-primary btn-sm me-2';
+        editButton.onclick = () => editAnilha(anilha.id);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Excluir';
+        deleteButton.className = 'btn btn-danger btn-sm';
+        deleteButton.onclick = () => showDeleteModal(anilha.id);
+
+        cellAcoes.appendChild(editButton);
+        cellAcoes.appendChild(deleteButton);
+        row.appendChild(cellAcoes);
+        tableBody.appendChild(row);
+    });
+}
+
+function showDeleteModal(id) {
+    const modal = document.getElementById('deleteModal');
+    modal.style.display = "block";
+
+    const confirmButton = document.getElementById('confirmDeleteButton');
+    confirmButton.onclick = function() {
+        deleteAnilha(id);
+        closeDeleteModal();
+    };
+}
+
+function closeDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    modal.style.display = "none";
 }
 
 function deleteAnilha(id) {
-    if (confirm("Você tem certeza que deseja excluir esta anilha?")) {
-        fetch(`https://85.31.63.241:3001/excluirAnilha/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message) {
-                alert(data.message);
-                document.getElementById(`row-${id}`).remove();
-            } else {
-                alert("Erro ao excluir anilha");
-            }
-        })
-        .catch(error => {
-            console.error("Erro ao excluir anilha:", error);
-            alert("Erro ao excluir anilha");
-        });
-    }
+    fetch(`https://85.31.63.241:3001/excluirAnilha/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .catch(error => {
+        console.error("Erro ao excluir anilha:", error);
+    });
 }
