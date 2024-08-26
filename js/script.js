@@ -18,7 +18,7 @@ function formatDateTime(dateTime) {
 
 async function listTagBirds() {
     try {
-        const response = await axios.get('https://85.31.63.241:3001/listarAnilha');
+        const response = await axios.get('85.31.63.241:3000/listarAnilha');
         const anilhas = response.data;
         populateTable(anilhas);
     } catch (error) {
@@ -85,7 +85,7 @@ function closeDeleteModal() {
 }
 
 function deleteAnilha(id) {
-    fetch(`https://85.31.63.241:3001/excluirAnilha/${id}`, {
+    fetch(`85.31.63.241:3000/excluirAnilha/${id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
