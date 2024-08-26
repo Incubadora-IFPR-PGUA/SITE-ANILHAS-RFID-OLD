@@ -1,3 +1,7 @@
+setInterval(function () {
+    listTagBirds();
+}, 2000);
+
 function formatDateTime(dateTime) {
     const date = new Date(dateTime);
     const pad = (num) => num.toString().padStart(2, '0');
@@ -11,10 +15,6 @@ function formatDateTime(dateTime) {
     
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
-
-setInterval(function () {
-    listTagBirds();
-}, 2000);
 
 async function listTagBirds() {
     try {
