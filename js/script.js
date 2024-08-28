@@ -16,16 +16,6 @@ function formatDateTime(dateTime) {
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
 
-async function listTagBirds() {
-    try {
-        const response = await axios.get('http://85.31.63.241:3000/listarAnilha');
-        const anilhas = response.data;
-        populateTable(anilhas);
-    } catch (error) {
-        console.error('Erro ao listar as anilhas:', error);
-    }
-}
-
 function populateTable(anilhas) {
     const tableBody = document.querySelector('#table tbody');
     tableBody.innerHTML = '';
@@ -61,9 +51,11 @@ function populateTable(anilhas) {
         deleteButton.className = 'btn btn-danger btn-sm';
         deleteButton.onclick = () => showDeleteModal(anilha.id);
 
-        cellAcoes.appendChild(editButton);
-        cellAcoes.appendChild(deleteButton);
-        row.appendChild(cellAcoes);
+        if (window.location.pathname === '/cadastros.html') {
+            cellAcoes.appendChild(editButton);
+            cellAcoes.appendChild(deleteButton);
+            row.appendChild(cellAcoes);
+        }
         tableBody.appendChild(row);
     });
 }
@@ -94,4 +86,14 @@ function deleteAnilha(id) {
     .catch(error => {
         console.error("Erro ao excluir anilha:", error);
     });
+}
+
+async function listTagBirds() {
+    try {
+        const response = await axios.get('http://85.31.63.241:3000/listarAnilha');
+        const anilhas = response.data;
+        populateTable(anilhas);
+    } catch (error) {
+        console.error('Erro ao listar as anilhas:', error);
+    }
 }
