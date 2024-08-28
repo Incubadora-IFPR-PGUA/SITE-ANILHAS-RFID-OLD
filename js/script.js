@@ -88,6 +88,23 @@ function deleteAnilha(id) {
     });
 }
 
+async function editAnilha(id) {
+    // fetch(`85.31.63.241:3000/excluirAnilha/${id}`, {
+    //     method: 'DELETE',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     }
+    // })
+    // .catch(error => {
+    //     console.error("Erro ao excluir anilha:", error);
+    // });
+    const response = await axios.get('http://85.31.63.241:3000/listarAnilha');
+    const anilhas = response.data;
+    anilhas.forEach(anilha => {
+        alert(anilha.nome);
+    });
+}
+
 async function listTagBirds() {
     try {
         const response = await axios.get('http://85.31.63.241:3000/listarAnilha');
