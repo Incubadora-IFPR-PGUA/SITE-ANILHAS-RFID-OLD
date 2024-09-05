@@ -2,6 +2,8 @@ setInterval(function () {
     listTagBirds();
 }, 2000);
 
+const HOST = 'http://85.31.63.241:8082';
+
 function formatDateTime(dateTime) {
     const date = new Date(dateTime);
     const pad = (num) => num.toString().padStart(2, '0');
@@ -77,7 +79,7 @@ function closeDeleteModal() {
 }
 
 function deleteAnilha(id) {
-    fetch(`85.31.63.241:3000/excluirAnilha/${id}`, {
+    fetch(`${HOST}/excluirAnilha/${id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -89,7 +91,7 @@ function deleteAnilha(id) {
 }
 
 async function editAnilha(id) {
-    // fetch(`85.31.63.241:3000/excluirAnilha/${id}`, {
+    // fetch(`${HOST}/excluirAnilha/${id}`, {
     //     method: 'DELETE',
     //     headers: {
     //         'Content-Type': 'application/json'
@@ -98,16 +100,11 @@ async function editAnilha(id) {
     // .catch(error => {
     //     console.error("Erro ao excluir anilha:", error);
     // });
-    const response = await axios.get('http://85.31.63.241:3000/listarAnilha');
-    const anilhas = response.data;
-    anilhas.forEach(anilha => {
-        alert(anilha.nome);
-    });
 }
 
 async function listTagBirds() {
     try {
-        const response = await axios.get('http://85.31.63.241:8082/listarAnilha');
+        const response = await axios.get(`${HOST}/listarAnilha`);
         const anilhas = response.data;
         populateTable(anilhas);
     } catch (error) {
